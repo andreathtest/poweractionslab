@@ -24,12 +24,6 @@ on:
         required: true
         default: solutions/
 
-env:
-  # Edit your values here
-  ENVIRONMENT_URL: 'https://org515141b3.crm11.dynamics.com/'
-  CLIENT_ID: 'd3fe13fe-6a10-48a8-8714-b0f75ebcf360'
-  TENANT_ID: '02672832-cf3e-4acc-8d11-740bbd012e0f'
-
 permissions:
   contents: write
 
@@ -38,6 +32,9 @@ jobs:
     runs-on: windows-latest
     # or you can say runs-on: ubuntu-latest
     env:
+      ENVIRONMENT_URL: 'https://org515141b3.crm11.dynamics.com/'
+      CLIENT_ID: 'd3fe13fe-6a10-48a8-8714-b0f75ebcf360'
+      TENANT_ID: '02672832-cf3e-4acc-8d11-740bbd012e0f'
       RUNNER_DEBUG: 1
 
     steps:
