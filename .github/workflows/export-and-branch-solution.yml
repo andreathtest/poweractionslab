@@ -1,16 +1,16 @@
 name: export-and-branch-solution
 # Export solution from DEV environment
-# Unpack it and prepare, commit and push a git branch with the changes
+# Unpack it and prepare, commit, and push a git branch with the changes
 
 on:
   workflow_dispatch:
     inputs:
-      # Change this value
+      # Change this value to your solution's name
       solution_name:
         description: 'Name of the solution to be worked on from Power Platform'
         required: true
-        default: ALMLab
-      # Do Not change these values
+        default: mda
+      # Do not change these values
       solution_exported_folder:
         description: 'Folder name for staging the exported solution *do not change*'
         required: true
@@ -19,7 +19,7 @@ on:
         description: 'Staging the unpacked solution folder before check-in *do not change*'
         required: true
         default: out/solutions/
-      solution_target_folder: 
+      solution_target_folder:
         description: 'Folder name to be created and checked in *do not change*'
         required: true
         default: solutions/
@@ -30,7 +30,6 @@ permissions:
 jobs:
   export-from-dev:
     runs-on: windows-latest
-    # or you can say runs-on: ubuntu-latest
     env:
       ENVIRONMENT_URL: 'https://org515141b3.crm11.dynamics.com/'
       CLIENT_ID: 'd3fe13fe-6a10-48a8-8714-b0f75ebcf360'
@@ -38,30 +37,34 @@ jobs:
       RUNNER_DEBUG: 1
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
       with:
         lfs: true
 
+    - name: Install Power Platform Tools
+      uses: microsoft/powerplatform-actions/actions-install@v1
+
     - name: Who-Am-I Action
-      uses: microsoft/powerplatform-actions/who-am-i@v0
+      uses: microsoft/powerplatform-actions/who-am-i@v1
       with:
         environment-url: ${{ env.ENVIRONMENT_URL }}
         app-id: ${{ env.CLIENT_ID }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
+        client-secret: ${{ secrets.GITHUBAPP }}
         tenant-id: ${{ env.TENANT_ID }}
 
     - name: Export Solution Action
-      uses: microsoft/powerplatform-actions/export-solution@v0
+      uses: microsoft/powerplatform-actions/export-solution@v1
       with:
         environment-url: ${{ env.ENVIRONMENT_URL }}
         app-id: ${{ env.CLIENT_ID }}
-        client-secret: ${{ secrets.PowerPlatformSPN }}
+        client-secret: ${{ secrets.GITHUBAPP }}
         tenant-id: ${{ env.TENANT_ID }}
         solution-name: ${{ github.event.inputs.solution_name }}
         solution-output-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}.zip
 
     - name: Unpack Solution Action
-      uses: microsoft/powerplatform-actions/unpack-solution@v0
+      uses: microsoft/powerplatform-actions/unpack-solution@v1
       with:
         solution-file: ${{ github.event.inputs.solution_exported_folder }}${{ github.event.inputs.solution_name }}.zip
         solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}
@@ -69,7 +72,7 @@ jobs:
         overwrite-files: true
 
     - name: Branch Solution, Prepare it for a Pull Request
-      uses: microsoft/powerplatform-actions/branch-solution@v0
+      uses: microsoft/powerplatform-actions/branch-solution@v1
       with:
         solution-folder: ${{ github.event.inputs.solution_folder }}${{ github.event.inputs.solution_name }}
         solution-target-folder: ${{ github.event.inputs.solution_target_folder }}${{ github.event.inputs.solution_name }}
