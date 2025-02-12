@@ -1,22 +1,24 @@
 name: Release action
 # Call the reusable workflow release-solution-with-inputs.yml
-# Release your solution to prod when you create a new release.
+# Release your solution to production when you create a new release.
 
 on:
   release:
-      types: [created]        
+    types: [created]
+
 permissions:
   contents: write
+
 jobs:
-  Release-solution-ALMLab:
+  Release-solution-mda:
     uses: ./.github/workflows/release-solution-to-prod-with-inputs.yml
     with:
-      #You can specify the solution name here
-      solution_name: ALMLab
-      #Update your values here
-      BUILD_ENVIRONMENT_URL: <BUILD_ENVIRONMENT>
-      PRODUCTION_ENVIRONMENT_URL: <PROD_ENVIRONMENT>
-      CLIENT_ID: <APP_ID>
-      TENANT_ID: <TENANT_ID>      
+      # Specify your solution name here
+      solution_name: mda
+      # Update your environment URLs and credentials here
+      BUILD_ENVIRONMENT_URL: 'https://orgb2e10833.crm11.dynamics.com/'  # Test/Build environment URL
+      PRODUCTION_ENVIRONMENT_URL: 'https://orgecbb9c8a.crm11.dynamics.com/'  # Production environment URL
+      CLIENT_ID: 'd3fe13fe-6a10-48a8-8714-b0f75ebcf360'  # Your Azure AD Application (Client) ID
+      TENANT_ID: '02672832-cf3e-4acc-8d11-740bbd012e0f'  # Your Azure AD Tenant ID
     secrets:
-      envSecret: ${{ secrets.PowerPlatformSPN }}
+      envSecret: ${{ secrets.GITHUBAPP }}  # Ensure this matches the name of your GitHub secret
